@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <script>
+      function hifunc(a) {
+        return new Promise((resolve, reject) => {
+          setTimeout(function () {
+            resolve(a);
+            // reject('error-1');
+          }, Math.random() * 2000);
+        });
+      }
+      hifunc("hi")
+        .then((r) => {
+          console.log(r);
+          return new Promise((resolve, reject) => {
+            setTimeout(function () {
+              // resolve('bbb');
+              resolve("error-2");
+            }, Math.random() * 2000);
+          });
+        })
+        .then((r2) => {
+          console.log(r2);
+        })
+        .catch((ex) => {
+          console.log("ex:", ex);
+        });
+
+      console.log("--- 1 ---");
+    </script>
+  </body>
+</html>
