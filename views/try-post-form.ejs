@@ -3,16 +3,21 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-6">
+            <div><%- JSON.stringify(locals) %></div>
             <form method="post">
                 <div class="form-group">
                     <label for="email">Email address</label>
                     <input type="text" class="form-control" id="email" name="email">
-                    <small class="form-text"><%= email %></small>
+                    <% if(typeof email!=='undefined'){ %>
+                        <small class="form-text">之前的值: <%= email %></small>
+                    <% } %>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="text" class="form-control" id="password" name="password">
-                    <small class="form-text"><%= password %></small>
+                    <% if(locals.password){ %>
+                        <small class="form-text">之前的值:<%= password %></small>
+                    <% } %>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
