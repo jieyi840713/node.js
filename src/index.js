@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
+const {v4: uuidv4} = require('uuid');
 const upload = multer({dest: __dirname + '/../tmp_uploads'});
 
 const app = express();
@@ -59,6 +60,7 @@ app.post('/try-upload', upload.single('avatar'), (req, res)=>{
                     req.file.path,
                     __dirname + '/../public/img/' + req.file.originalname,
                     error=>{
+
                         return res.json({
                             success: true,
                             path: '/img/'+ req.file.originalname
@@ -83,6 +85,17 @@ app.post('/try-upload', upload.single('avatar'), (req, res)=>{
     }
 });
 
+app.get('/try-uuid',(req, res)=>{
+    res.json({
+        uuid1: uuidv4(),
+        uuid2: uuidv4(),
+    });
+});
+
+const upload2 = require(__dirname + '/upload-img-module');
+app.post('/try-upload2', upload2.single('avatar'), (req, res)=> {
+    res.json(req.file);
+});
 
 app.use( express.static(__dirname + '/../public'));
 
