@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const {v4: uuidv4} = require('uuid');
+const axios = require('axios');
 const upload = multer({dest: __dirname + '/../tmp_uploads'});
 
 const app = express();
@@ -116,6 +117,12 @@ app.get(/^\/m\/09\d{2}-?\d{3}-?\d{3}$/i, (req, res)=> {
 
 app.use(require(__dirname + '/routes/admin2'));
 app.use('/members', require(__dirname + '/routes/admin3'));
+
+app.get('/yahoo', async (req, res)=>{
+    const response = await axios.get('https://tw.yahoo.com/');
+    res.send(response.data);
+});
+
 
 app.use( express.static(__dirname + '/../public'));
 
