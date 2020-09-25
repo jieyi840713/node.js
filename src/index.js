@@ -1,4 +1,7 @@
 const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
+const upload = multer({dest: __dirname + '/../tmp_uploads'});
 
 const app = express();
 
@@ -40,6 +43,11 @@ app.get('/try-post-form',(req, res)=>{
 app.post('/try-post-form',(req, res)=>{
     res.render('try-post-form', req.body);
 });
+
+app.post('/try-upload', upload.single('avatar'), (req, res)=>{
+    res.json(req.file);
+});
+
 
 app.use( express.static(__dirname + '/../public'));
 
