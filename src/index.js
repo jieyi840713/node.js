@@ -97,6 +97,21 @@ app.post('/try-upload2', upload2.single('avatar'), (req, res)=> {
     res.json(req.file);
 });
 
+app.get('/my-params1/:action?/:id?', (req, res)=> {
+    res.json(req.params);
+});
+app.get('/my-params2/*?/*?', (req, res)=> {
+    res.json(req.params);
+});
+
+app.get(/^\/m\/09\d{2}-?\d{3}-?\d{3}$/i, (req, res)=> {
+    let u = req.url.slice(3).split('?')[0];
+    u = u.replace(/-/g, '');
+    res.send(u);
+});
+
+app.use(require(__dirname + '/routes/admin2'));
+
 app.use( express.static(__dirname + '/../public'));
 
 app.use((req, res )=>{
