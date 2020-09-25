@@ -10,7 +10,10 @@ app.set('view engine', 'ejs');
 
 app.use( express.urlencoded({extended: false}) );
 app.use( express.json() );
-
+app.use((req, res, next)=>{
+    res.locals.title = '小新牛排店';
+    next();
+})
 
 app.get('/', (req, res)=>{
     // res.send('<h2>Hola </h2>');
@@ -19,6 +22,7 @@ app.get('/', (req, res)=>{
 
 app.get('/json-sales', (req, res)=>{
     const sales = require(__dirname + '/../data/sales');
+    res.locals.title += ' - JSON';
     // res.json(sales);
     res.render('json-sales', {sales})
 });
@@ -111,6 +115,7 @@ app.get(/^\/m\/09\d{2}-?\d{3}-?\d{3}$/i, (req, res)=> {
 });
 
 app.use(require(__dirname + '/routes/admin2'));
+app.use('/members', require(__dirname + '/routes/admin3'));
 
 app.use( express.static(__dirname + '/../public'));
 
