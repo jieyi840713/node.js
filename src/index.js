@@ -3,6 +3,7 @@ const multer = require('multer');
 const fs = require('fs');
 const {v4: uuidv4} = require('uuid');
 const axios = require('axios');
+const session = require('express-session');
 const upload = multer({dest: __dirname + '/../tmp_uploads'});
 
 const app = express();
@@ -11,6 +12,14 @@ app.set('view engine', 'ejs');
 
 app.use( express.urlencoded({extended: false}) );
 app.use( express.json() );
+app.use(session({
+    saveUninitialized: false,
+    resave: false,
+    secret: 'jghdkasskjfks37848kj',
+    cookie: {
+        maxAge: 1200000
+    }
+}));
 app.use((req, res, next)=>{
     res.locals.title = '小新牛排店';
     next();
@@ -123,6 +132,14 @@ app.get('/yahoo', async (req, res)=>{
     res.send(response.data);
 });
 
+app.get('/try-session', (req, res)=>{
+    req.session.myVar = req.session.myVar || 0;
+    req.session.myVar++;
+    res.json({
+        myVar: req.session.myVar,
+        session: req.session
+    });
+});
 
 app.use( express.static(__dirname + '/../public'));
 
