@@ -4,6 +4,7 @@ const fs = require('fs');
 const {v4: uuidv4} = require('uuid');
 const axios = require('axios');
 const session = require('express-session');
+const moment = require('moment-timezone');
 const upload = multer({dest: __dirname + '/../tmp_uploads'});
 
 const app = express();
@@ -135,9 +136,21 @@ app.get('/yahoo', async (req, res)=>{
 app.get('/try-session', (req, res)=>{
     req.session.myVar = req.session.myVar || 0;
     req.session.myVar++;
+    console.log(req.session);
     res.json({
         myVar: req.session.myVar,
         session: req.session
+    });
+});
+
+app.get('/try-moment', (req, res)=>{
+    const fm = 'YYYY-MM-DD HH:mm:ss';
+    const now = moment(new Date());
+
+    res.json({
+        t1: new Date(),
+        t2: now.format(fm),
+        t3: moment(req.session.cookie.expires).format(fm),
     });
 });
 
