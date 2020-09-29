@@ -1,6 +1,7 @@
 const express = require('express');
 const moment = require('moment-timezone');
 const db = require(__dirname + '/../db_connect2');
+const upload = require(__dirname + '/../upload-img-module');
 
 const router = express.Router();
 
@@ -123,9 +124,41 @@ router.get('/list', async (req, res)=>{
 router.get('/add', (req, res)=>{
     res.render('address-book/add');
 });
-router.post('/add', (req, res)=>{
+router.post('/add', upload.none(), async (req, res)=>{
+    const data = {...req.body};
+    data.created_at = new Date();
+    const sql = "INSERT INTO `address_book` set ?";
+    const [{affectedRows, insertId}] = await db.query(sql, [ data ]);
+    // [{"fieldCount":0,"affectedRows":1,"insertId":860,"info":"","serverStatus":2,"warningStatus":1},null]
 
+    res.json({
+        success: !!affectedRows,
+        affectedRows,
+        insertId,
+    });
 });
+
+router.get('/edit/:sid', async (req, res)=>{
+    const sql = "SELECT * FROM address_book WHERE sid=?";
+
+    const [results] = await db.query(sql, [req.params.sid]);
+    if(! results.length){
+        return res.redirect('/address-book/list');
+    }
+
+    results[0].birthday = moment(results[0].birthday).format('YYYY-MM-DD');
+    res.render('address-book/edit', results[0]);
+});
+router.post('/edit/:sid', upload.none(), async (req, res)=>{
+    const data = {...req.body};
+    const sql = "UPDATE `address_book` SET ? WHERE `sid`=?";
+    const [results] = await db.query(sql, [ data, req.params.sid ]);
+    // {"fieldCount":0,"affectedRows":1,"insertId":0,"info":"Rows matched: 1  Changed: 0  Warnings: 0","serverStatus":2,"warningStatus":0,"changedRows":0}
+
+
+    res.json(results);
+});
+
 /*
     列表  /list
         列表呈現 GET
