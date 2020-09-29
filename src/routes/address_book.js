@@ -14,7 +14,8 @@ async function getListData (req) {
         perPage: 5,
         totalRows: 0,
         totalPages: 0,
-        rows: []
+        rows: [],
+        pages: []
     };
 
     const [[{ totalRows }]] = await db.query("SELECT COUNT(1) totalRows FROM address_book");
@@ -29,6 +30,30 @@ async function getListData (req) {
             output.page = output.totalPages;
         } else {
             output.page = page;
+        }
+
+        // 處理頁碼按鈕
+        if(output.totalPages <= 7){
+            for(let i=1; i<=output.totalPages; i++){
+                output.pages.push(i);
+            }
+        } else {
+            const fAr = [], bAr = [];
+            // 從前面開始數
+            for(let i=output.page-3; i<=output.totalPages; i++){
+                if(i>=1){
+                    fAr.push(i);
+                }
+                if(fAr.length >= 7) break;
+            }
+            // 從後面開始數
+            for(let i=output.page+3; i>=1; i--){
+                if(i<=output.totalPages){
+                    bAr.unshift(i);
+                }
+                if(bAr.length >= 7) break;
+            }
+            output.pages = fAr.length > bAr.length ? fAr : bAr;
         }
 
         let sql = `SELECT * FROM address_book ORDER BY sid DESC LIMIT ${(output.page-1)*output.perPage}, ${output.perPage}`;
@@ -70,6 +95,12 @@ router.get('/list', async (req, res)=>{
     res.render('address-book/list', output);
 });
 
+router.get('/add', (req, res)=>{
+    res.render('address-book/add');
+});
+router.post('/add', (req, res)=>{
+
+});
 /*
     列表  /list
         列表呈現 GET
