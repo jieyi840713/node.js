@@ -33,4 +33,12 @@
     </div>
   </div>
 </div>
-<%- include('../parts/scripts') %> <%- include('../parts/html-foot') %>
+<%- include('../parts/scripts') %> 
+<script>
+    document.querySelector('tbody').addEventListener('click',(event)=>{
+        if(enent.target.classList.contain('fa-trash')){
+            event.target.closest('tr').remove();
+        }
+    });
+</script>
+<%- include('../parts/html-foot') %>
