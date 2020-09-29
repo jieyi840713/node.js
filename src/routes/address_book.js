@@ -11,7 +11,7 @@ router.get('/', (req, res)=>{
 async function getListData (req) {
     const output = {
         page: 0,
-        perPage: 10,
+        perPage: 5,
         totalRows: 0,
         totalPages: 0,
         rows: []

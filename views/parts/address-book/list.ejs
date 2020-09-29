@@ -23,11 +23,12 @@
               <i class="fas fa-angle-left"></i>
             </a>
           </li>
-          <% for(let i=1; i<=totalPages; i++){ %>
+          <% for(let i=page-3, c=0; ; i++){ if(i<1) continue; if(i>totalPages)
+          break; %>
           <li class="page-item <%= i===page ? 'active' : '' %>">
             <a class="page-link" href="?page=<%= i %>"><%= i %></a>
           </li>
-          <% } %>
+          <% c++; if(c>=7) break; } %>
           <li class="page-item <%= page===totalPages ? 'disabled' : '' %>">
             <a class="page-link" href="?page=<%= page+1 %>">
               <i class="fas fa-angle-right"></i>
