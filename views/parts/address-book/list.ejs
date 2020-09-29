@@ -54,18 +54,24 @@
             <th scope="col">mobile</th>
             <th scope="col">birthday</th>
             <th scope="col">address</th>
+            <td><i class="fas fa-edit"></i></td>
           </tr>
         </thead>
         <tbody>
           <% for(let i of rows){ %>
           <tr>
-            <td><i class="fas fa-trash"></i></td>
+            <td><i class="fas fa-trash" data-sid="<%= i.sid %>"></i></td>
             <td><%= i.sid %></td>
             <td><%= i.name %></td>
             <td><%= i.email %></td>
             <td><%= i.mobile %></td>
             <td><%= i.birthday2 %></td>
             <td><%= i.address %></td>
+            <td>
+              <a href="/address-book/edit/<%= i.sid %>">
+                <i class="fas fa-edit"></i>
+              </a>
+            </td>
           </tr>
           <% } %>
         </tbody>
@@ -88,11 +94,20 @@
 </div>
 <%- include('../parts/scripts') %>
 <script>
-  /*
-    $('table tbody .fa-trash').on('click', function(){
-        $(this).closest('tr').remove();
-    });
-     */
+  $("table tbody .fa-trash").on("click", function () {
+    const sid = $(this).attr("data-sid");
+    // const sid = $(this).data('sid');
+
+    fetch("/address-book/del/" + sid, {
+      method: "DELETE",
+    })
+      .then((r) => r.json())
+      .then((obj) => {
+        console.log(obj);
+        location.reload();
+      });
+  });
+
   /*
     document.querySelector('tbody').addEventListener('click', (event)=>{
         console.log(event.target.className);
