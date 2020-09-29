@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment-timezone');
 const db = require(__dirname + '/../db_connect2');
 
 const router = express.Router();
@@ -33,6 +34,9 @@ async function getListData (req) {
         let sql = `SELECT * FROM address_book ORDER BY sid DESC LIMIT ${(output.page-1)*output.perPage}, ${output.perPage}`;
 
         const [r2] = await db.query(sql);
+        r2.forEach(el=>{
+            el.birthday2 = moment(el.birthday).format('YYYY-MM-DD');
+        });
         output.rows = r2;
     }
 
