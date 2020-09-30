@@ -79,11 +79,17 @@
     }
 
     if (isPass) {
-      const fd = new FormData(document.form1);
+      //const fd = new FormData(document.form1);
 
       fetch("", {
         method: "POST",
-        body: fd,
+        body: JSON.stringify({
+          account: $account.value,
+          password: $password.value,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
         .then((r) => r.json())
         .then((obj) => {
