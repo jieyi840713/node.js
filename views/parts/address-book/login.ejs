@@ -1,8 +1,15 @@
 <%- include('../parts/html-head') %> <%- include('../parts/navbar') %>
-
+<style>
+  span.red-stars {
+    color: red;
+  }
+  small.error-msg {
+    color: red;
+  }
+</style>
 <div class="container">
   <div class="row d-flex justify-content-center">
-    <div class="col-6">
+    <div class="col-lg-6 col-sm-12">
       <div
         id="infobar"
         class="alert alert-success"
@@ -12,7 +19,7 @@
 
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">登入</h5>
+          <h5 class="card-title">管理者登入</h5>
           <form name="form1" onsubmit="checkForm(); return false;" novalidate>
             <div class="form-group">
               <label for="account">account</label>
@@ -60,10 +67,15 @@
     });
 
     // TODO: 檢查資料格式
-    if ($name.value.length < 2) {
+    if ($account.value.length < 2) {
       isPass = false;
-      $name.style.borderColor = "red";
-      $name.nextElementSibling.innerHTML = "請填寫正確的姓名";
+      $account.style.borderColor = "red";
+      $account.nextElementSibling.innerHTML = "請填寫正確的帳號";
+    }
+    if ($password.value.length < 2) {
+      isPass = false;
+      $password.style.borderColor = "red";
+      $password.nextElementSibling.innerHTML = "請填寫密碼";
     }
 
     if (isPass) {
@@ -77,15 +89,10 @@
         .then((obj) => {
           console.log(obj);
           if (obj.success) {
-            infobar.html("新增成功");
-            infobar.removeClass("alert-danger").addClass("alert-success");
-            // setTimeout(() => {
-            //     location.href = 'data-list.php';
-            // }, 3000)
+            location.href = "/address-book/list";
           } else {
-            infobar.html(obj.error || "新增失敗");
+            infobar.html(obj.error || "帳號或密碼錯誤");
             infobar.removeClass("alert-success").addClass("alert-danger");
-
             submitBtn.style.display = "block";
           }
           infobar.slideDown();

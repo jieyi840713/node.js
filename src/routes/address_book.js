@@ -13,7 +13,7 @@ router.get('/login',async (req, res)=>{
     res.render('address-book/login');
 });
 router.post('/login',async (req, res)=>{
-
+    res.json({});
 })
 router.get('/logout',async (req, res)=>{
     delete req.session.admin;
