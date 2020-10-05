@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <button onclick="send()">send token</button>
+
+    <script>
+      const jwtData = JSON.parse(localStorage.getItem("jwtTest"));
+
+      function send() {
+        fetch("/address-book/verify2", {
+          headers: {
+            Authorization: "Bearer " + jwtData.token,
+          },
+        })
+          .then((r) => r.json())
+          .then((obj) => {
+            console.log(obj);
+          });
+      }
+    </script>
+  </body>
+</html>

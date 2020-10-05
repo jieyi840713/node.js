@@ -1,13 +1,33 @@
 const express = require('express');
 const moment = require('moment-timezone');
+const jwt = require('jsonwebtoken');
 const db = require(__dirname + '/../db_connect2');
 const upload = require(__dirname + '/../upload-img-module');
 
 const router = express.Router();
 
+router.use((req, res, next)=>{
+    const whiteList = ['list', 'login', 'verify', 'verify2'];
+
+    let u = req.url.split('?')[0];
+    u = u.split('/');
+    //console.log(`address-book: ${u[1]}`);
+    if(whiteList.includes(u[1])){
+        next();
+    } else {
+        if(! req.session.admin){
+            res.redirect('/address-book/list');
+        } else {
+            next();
+        }
+    }
+});
+
 router.get('/', (req, res)=>{
     res.redirect('/address-book/list');
 });
+
+
 
 router.get('/login', (req, res)=>{
     res.render('address-book/login');
@@ -22,6 +42,8 @@ router.post('/login', async (req, res)=>{
     if(rs.length){
         req.session.admin = rs[0];
         output.success = true;
+
+        output.token = jwt.sign({...rs[0]}, process.env.TOKEN_SECRET);
     }
     res.json(output);
 })
@@ -30,7 +52,30 @@ router.get('/logout', (req, res)=>{
     res.redirect('/address-book/list');
 })
 
+router.post('/verify', (req, res)=>{
+    // req.body.token
+    jwt.verify(req.body.token, process.env.TOKEN_SECRET, function(error, payload){
+        if(error){
+            res.json({error: error});
+        } else {
+            res.json(payload);
+        }
+    });
+})
+router.get('/verify2', (req, res)=>{
 
+    const auth = req.get('Authorization');
+
+    res.json({ auth });
+    // req.body.token
+    // jwt.verify(req.body.token, process.env.TOKEN_SECRET, function(error, payload){
+    //     if(error){
+    //         res.json({error: error});
+    //     } else {
+    //         res.json(payload);
+    //     }
+    // });
+})
 
 async function getListData (req) {
     const output = {
@@ -141,7 +186,11 @@ router.get('/api', async (req, res)=>{
 
 router.get('/list', async (req, res)=>{
     const output = await getListData(req);
-    res.render('address-book/list', output);
+    if(req.session.admin){
+        res.render('address-book/list', output);
+    } else {
+        res.render('address-book/list-noadmin', output);
+    }
 });
 
 router.get('/add', (req, res)=>{
