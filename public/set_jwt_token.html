@@ -6,6 +6,8 @@
   </head>
   <body>
     <button onclick="send()">send token</button>
+    <br />
+    <button onclick="send2()">send</button>
 
     <script>
       const jwtData = JSON.parse(localStorage.getItem("jwtTest"));
@@ -16,6 +18,14 @@
             Authorization: "Bearer " + jwtData.token,
           },
         })
+          .then((r) => r.json())
+          .then((obj) => {
+            console.log(obj);
+          });
+      }
+
+      function send2() {
+        fetch("/address-book/verify2")
           .then((r) => r.json())
           .then((obj) => {
             console.log(obj);

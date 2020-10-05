@@ -64,17 +64,26 @@ router.post('/verify', (req, res)=>{
 })
 router.get('/verify2', (req, res)=>{
 
-    const auth = req.get('Authorization');
+    res.json({
+        bearer: req.bearer
+    });
 
-    res.json({ auth });
-    // req.body.token
-    // jwt.verify(req.body.token, process.env.TOKEN_SECRET, function(error, payload){
+    // let auth = req.get('Authorization');
+    //
+    // if(auth.indexOf('Bearer ')===0){
+    //     auth = auth.slice(7);
+    // } else {
+    //     return res.json({error: 'bad token!'});
+    // }
+    //
+    // jwt.verify(auth, process.env.TOKEN_SECRET, function(error, payload){
     //     if(error){
     //         res.json({error: error});
     //     } else {
     //         res.json(payload);
     //     }
     // });
+
 })
 
 async function getListData (req) {

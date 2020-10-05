@@ -5,9 +5,11 @@ const multer = require('multer');
 const fs = require('fs');
 const {v4: uuidv4} = require('uuid');
 const axios = require('axios');
+const jwt = require('jsonwebtoken');
 const session = require('express-session');
 const MysqlStore = require('express-mysql-session')(session);
 const moment = require('moment-timezone');
+const cors = require('cors');
 const db = require(__dirname + '/db_connect2');
 const sessionStore = new MysqlStore({}, db);
 const upload = multer({dest: __dirname + '/../tmp_uploads'});
@@ -18,6 +20,14 @@ app.set('view engine', 'ejs');
 
 app.use( express.urlencoded({extended: false}) );
 app.use( express.json() );
+const corsOptions = {
+    credentials: true,
+    origin: function(origin, cb){
+        console.log(`origin: ${origin}`);
+        cb(null, true);
+    }
+};
+app.use(cors(corsOptions));
 app.use(session({
     saveUninitialized: false,
     resave: false,
@@ -28,8 +38,21 @@ app.use(session({
     }
 }));
 app.use((req, res, next)=>{
-    res.locals.title = '小新牛排店';
+    res.locals.title = '小新購物網';
     res.locals.sess = req.session;
+
+    let auth = req.get('Authorization');
+
+    if(auth && auth.indexOf('Bearer ')===0){
+        auth = auth.slice(7);
+        jwt.verify(auth, process.env.TOKEN_SECRET, function(error, payload){
+            if(!error){
+                req.bearer = payload;
+            }
+            return next();
+        });
+    }
+
     next();
 })
 
@@ -172,6 +195,9 @@ app.get('/try-db', (req, res)=>{
 });
 
 app.use('/address-book', require(__dirname + '/routes/address-book'));
+
+
+
 
 app.use( express.static(__dirname + '/../public'));
 
